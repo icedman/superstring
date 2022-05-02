@@ -4,13 +4,9 @@
 #include "optional.h"
 #include <string>
 
-struct pcre2_real_code_16;
-struct pcre2_real_match_data_16;
 struct BuildRegexResult;
 
 class Regex {
-  pcre2_real_code_16 *code;
-  Regex(pcre2_real_code_16 *);
 
  public:
   Regex();
@@ -20,7 +16,6 @@ class Regex {
   ~Regex();
 
   class MatchData {
-    pcre2_real_match_data_16 *data;
     friend class Regex;
 
    public:
