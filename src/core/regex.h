@@ -1,12 +1,14 @@
 #ifndef REGEX_H_
 #define REGEX_H_
 
-#include "optional.h"
 #include <string>
+
+#include "optional.h"
 
 struct BuildRegexResult;
 
 class Regex {
+  void *_regex;
 
  public:
   Regex();
@@ -16,6 +18,7 @@ class Regex {
   ~Regex();
 
   class MatchData {
+    void *_region;
     friend class Regex;
 
    public:

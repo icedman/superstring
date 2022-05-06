@@ -71,7 +71,6 @@ public:
     TextBuffer &buffer;
     Layer &layer;
     Layer &base_layer;
-
     Snapshot(TextBuffer &, Layer &, Layer &);
 
   public:
