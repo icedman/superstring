@@ -119,6 +119,11 @@ MatchResult Regex::match(const char16_t* string, size_t length, MatchData& match
   int r;
   unsigned char *start, *range, *end;
 
+  unsigned int onig_options = ONIG_OPTION_NONE;
+  if (!(options & MatchOptions::IsEndSearch)) onig_options |= ONIG_OPTION_NOTEOS;
+  if (!(options & MatchOptions::IsBeginningOfLine)) onig_options |= ONIG_OPTION_NOTBOL;
+  if (!(options & MatchOptions::IsEndOfLine)) onig_options |= ONIG_OPTION_NOTEOL;
+
   // expensive? << conversions
   std::string _sstring = u16string_to_string(string);
 
@@ -126,7 +131,7 @@ MatchResult Regex::match(const char16_t* string, size_t length, MatchData& match
   end = str + strlen((char*)str);
   start = str;
   range = end;
-  r = onig_search(reg, str, end, start, range, region, ONIG_OPTION_NONE);
+  r = onig_search(reg, str, end, start, range, region, onig_options);
   if (r >= 0) {
     int i;
     // fprintf(stderr, "match at %d\n", r);
