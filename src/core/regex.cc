@@ -60,7 +60,8 @@ Regex::Regex(const char16_t* _pattern, uint32_t pattern_length, u16string* error
     pattern_length = 4;
   }
 
-  std::string _spattern = u16string_to_string(_pattern);
+  // std::string _spattern = u16string_to_string(_pattern);
+  // printf(">%s", _spattern.c_str());
 
   _regex = NULL;
 
@@ -70,14 +71,14 @@ Regex::Regex(const char16_t* _pattern, uint32_t pattern_length, u16string* error
   regex_t* reg = NULL;
   OnigErrorInfo einfo;
 
-  UChar* pattern = (UChar*)_spattern.c_str();
+  UChar* pattern = (UChar*)_pattern;
 
   int opts = ONIG_OPTION_DEFAULT;
   if (ignore_case) {
     opts = opts | ONIG_OPTION_IGNORECASE;
   }
 
-  int r = onig_new(&reg, pattern, pattern + strlen((char*)pattern), opts, ONIG_ENCODING_UTF8,
+  int r = onig_new(&reg, pattern, pattern + pattern_length * 2, opts, ONIG_ENCODING_UTF16_LE,
                    ONIG_SYNTAX_DEFAULT, &einfo);
   if (r != ONIG_NORMAL) {
     OnigUChar s[ONIG_MAX_ERROR_MESSAGE_LEN];
@@ -125,10 +126,10 @@ MatchResult Regex::match(const char16_t* string, size_t length, MatchData& match
   if (!(options & MatchOptions::IsEndOfLine)) onig_options |= ONIG_OPTION_NOTEOL;
 
   // expensive? << conversions
-  std::string _sstring = u16string_to_string(string);
+  // std::string _sstring = u16string_to_string(string);
 
-  UChar* str = (UChar*)_sstring.c_str();
-  end = str + strlen((char*)str);
+  UChar* str = (UChar*)string;
+  end = str + length;
   start = str;
   range = end;
   r = onig_search(reg, str, end, start, range, region, onig_options);
@@ -137,8 +138,8 @@ MatchResult Regex::match(const char16_t* string, size_t length, MatchData& match
     // fprintf(stderr, "match at %d\n", r);
     for (i = 0; i < region->num_regs; i++) {
       // fprintf(stderr, "%d: (%ld-%ld)\n", i, region->beg[i], region->end[i]);
-      result.start_offset = region->beg[i];
-      result.end_offset = region->end[i];
+      result.start_offset = region->beg[i]/2;
+      result.end_offset = region->end[i]/2;
       result.type = MatchResult::Full;
       break;
     }
