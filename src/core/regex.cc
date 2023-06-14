@@ -1,5 +1,4 @@
 #include "regex.h"
-#include "utf8.h"
 
 #include <stdlib.h>
 
